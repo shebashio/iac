@@ -34,33 +34,28 @@ resource "cloudflare_record" "www" {
   proxied = true
 }
 
-resource "cloudflare_ruleset" "account_level_managed_waf" {
-  # Execute Cloudflare OWASP Core Ruleset
+
+resource "cloudflare_ruleset" "zone_level_http_ddos_config" {
+  zone_id     = "var.zone_id"
+  name        = "HTTP DDoS Attack Protection entry point ruleset"
+  description = ""
+  kind        = "zone"
+  phase       = "ddos_l7"
+
   rules {
     action = "execute"
     action_parameters {
-      id = "4814384a9e5d4991b9815dcfc25d2f1f"
+      id = "4d21379b4f9f4bb088e0729962c8b3cf"
       overrides {
-        # By default, all PL1 to PL4 rules are enabled.
-        # Set the paranoia level to PL2 by disabling rules with
-        # tags "paranoia-level-3" and "paranoia-level-4".
-        categories {
-          category = "paranoia-level-3"
-          status = "disabled"
-        }
-        categories {
-          category = "paranoia-level-4"
-          status = "disabled"
-        }
         rules {
-          id = "6179ae15870a4bb7b2d480d4843b323c"
-          action = "log"
-          score_threshold = 60
+          # Rule: HTTP requests with unusual HTTP headers or URI path (signature #11).
+          id = "fdfdac75430c4c47a959592f0aa5e68a"
+          sensitivity_level = "low"
         }
       }
     }
     expression = "true"
-    description = "zone"
+    description = "Override the HTTP DDoS Attack Protection managed ruleset"
     enabled = true
   }
 }
