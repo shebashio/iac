@@ -36,7 +36,7 @@ resource "cloudflare_record" "www" {
 
 
 resource "cloudflare_ruleset" "zone_level_http_ddos_config" {
-  zone_id     = "var.zone_id"
+  zone_id     = var.zone_id
   name        = "HTTP DDoS Attack Protection entry point ruleset"
   description = ""
   kind        = "zone"
